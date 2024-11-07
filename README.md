@@ -1,7 +1,7 @@
 # adma_ros2_driver
 Further Information can be found at the [GeneSys Technical Support Center](https://genesys-offenburg.de/support-center/). 
 
-## Integrated ROS Topics
+## Integrated Standard ROS Topics
 The ADMA uses a combination of GNSS-Receiver and different rate and acceleration sensors. Due to this, different ROS topics are getting filled with sensor, GNSS and combined measurement data as shown in the following list:
 
 | Topic | Content | Description |
@@ -13,6 +13,7 @@ The ADMA uses a combination of GNSS-Receiver and different rate and acceleration
 | /adma/fix | [sensor_msgs::Navsatfix](http://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/NavSatFix.html) | GNSS Information in the standard ROS format. |
 | /adma/imu | [sensor_msgs::imu](http://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/Imu.html) | Inertial data in the standard ROS format. |
 | /adma/data_raw | Raw UDP data stream | ADMA raw data as binary data stream. |
+| /adma/odometrsy | [nav_msgs::Odometry](http://docs.ros.org/en/noetic/api/nav_msgs/html/msg/Odometry.html) | Position, velocity and orientation |
 
 ## Environment information
 This setup was implemented and tested with the following conditions:
@@ -30,14 +31,27 @@ cd ~/ros2_ws/src
 git clone -b ros_2 $REPO_URL(HTPPS/SSH)
 ```
 
-2. Build workspace
+2. install all ROS dependencies (the warning for `ament_cmake_clange_format` can be ignored..)
+```bash
+cd ~/ros2_ws
+# source ROS
+. /opt/ros/$INSTALLED_ROS_CONTRIB/setup.bash
+# initialize rosdep
+sudo rosdep init # only required if not already done for other projects on your system
+# update rosdep
+rosdep update
+# install dependencies
+rosdep install --from-paths src --ignore-src -y
+```
+
+3. Build your workspace
 ```bash
 cd ~/ros2_ws
 . /opt/ros/$INSTALLED_ROS_CONTRIB/setup.bash
 colcon build --symlink-install
 ```
 
-3. Source workspace and launch
+4. Source workspace and launch
 ```bash
 . install/setup.bash
 ros2 launch adma_ros2_driver adma_driver.launch.py
@@ -47,7 +61,22 @@ ros2 launch adma_ros2_driver adma_driver.launch.py
 ### Config File
 For configuring the ADMA ROS Driver the according parameters in the `adma_ros2_driver/config/driver_config.yaml` file have to be modified.
 If the workspace was built with `colcon build --symlink-install`, it is possible to restart the node after changing configuration parameters directly. Otherwise (built without '--symlink-install') it is necessary to rebuild the workspace to update the files. 
-Same "linking" rule applies to the `launch.py` files. The available parameters are described in the table below.
+Same "linking" rule applies to the `launch.py` files. The available parameters are described below.
+
+#### ROS Topic configuration
+The ROS Topics can be output in desired measurement point locations in the vehicle. This can be done by using the ADMA POI's (Point of Interest). The POI's are defined in the ADMA Webinterface
+through user defined offsets to the Measurement Reference Point (MRP). In the ADMA ROS Driver, the POI's in which each ROS topic shall be output can be selected with the relating ID in the 
+Driver Config File (0 = MRP, 1-8 = POI 1-8). As Default, the ROS Topics are output in POI1. 
+
+By default, the odometry topic outputs Yaw relative to the north direction. You can configure an offset for Yaw using the "odometry_yaw_offset" parameter.
+
+With the mode, it is possible to switch between the online and the replay mode. The replay mode is a built in replay function for subscribing to the /adma/data_raw topic of a replayed bag file. 
+This enables only the decoder part of the driver, that takes the rosbag data and publishes them in the standard ADMA ROS driver topics. 
+
+With the time_mode parameter it is possible to define how the ROS header time stamps shall be defined. Either by the ADMA INS Time (default) or by the ROS system time. 
+
+![ConfigFile](https://github.com/GeneSysElektronik/adma_ros_driver/assets/105273302/dd0d2eb0-3ec5-4649-8949-1ec591de530b)
+
 
 ### Launch File
 #### Topic Remapping
@@ -61,7 +90,7 @@ It is possible to remap ROS topics in the driver to new namings by editing the `
 | use_performance_check | True / False | True if you want to log informations about the performance | driver_config.yaml |
 | gnss_frame | name as string | ROS frame_id of the NavSat topic | driver_config.yaml |
 | imu_frame | name as string | ROS frame_id of the IMU topic | driver_config.yaml |
-| protocol_version | "v3.2" / "v3.3.3" / "v3.3.4" | the ADMAnet protocol version of your ADMA | driver_config.yaml |
+| protocol_version | "v3.2" / "v3.3.3" / "v3.3.4" / "v3.3.5" | the ADMAnet protocol version of your ADMA | driver_config.yaml |
 | frame_ids | BOOL | Define the ROS topic names |  driver_config.yaml |
 | log_gsdb | BOOL | Enable creating a GSDB file for logging the raw data |  adma_driver.launch.py |
 | record_rosbag | BOOL | Enable logging a rosbag file |  adma_driver.launch.py |
@@ -80,7 +109,7 @@ To switch between those, the`protocol_version` parameter in the `config/driver_c
 
         - UDP packet protocol of 856 bytes
         - supports 8 POI
-- v3.3.4
+- v3.3.5
 
         - UDP packet protocol of 856 bytes
         - supports 8 POI
@@ -91,7 +120,7 @@ To switch between those, the`protocol_version` parameter in the `config/driver_c
 ## Data Output
 The ADMA ROS driver is able to output two different file formats. 
 
-![Online](https://github.com/GeneSysElektronik/adma_ros_driver/assets/105273302/fbd7470e-6d6f-4499-8fd2-08a0110f89e2)
+![Online](https://github.com/GeneSysElektronik/adma_ros_driver/assets/105273302/f10a2ed1-1e7b-47b4-9f03-14a68fcdeac3)
 
 ### GeneSys Binary Raw Data (.gsdb)
 ![Integration of GSDB in the GeneSys Toolchain](https://user-images.githubusercontent.com/105273302/230074686-9b17826a-16d4-4f6a-83f7-8cd19daad914.jpg)

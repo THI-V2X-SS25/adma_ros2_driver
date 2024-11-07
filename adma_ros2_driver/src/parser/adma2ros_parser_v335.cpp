@@ -1,11 +1,11 @@
-#include "adma_ros2_driver/parser/adma2ros_parser_v334.hpp"
+#include "adma_ros2_driver/parser/adma2ros_parser_v335.hpp"
 
 #include "adma_ros2_driver/parser/parser_utils.hpp"
 
-ADMA2ROSParserV334::ADMA2ROSParserV334() {}
+ADMA2ROSParserV335::ADMA2ROSParserV335() {}
 
-void ADMA2ROSParserV334::mapAdmaMessageToROS(
-  adma_ros_driver_msgs::msg::AdmaDataScaled & ros_msg, AdmaDataV334 & adma_data)
+void ADMA2ROSParserV335::mapAdmaMessageToROS(
+  adma_ros_driver_msgs::msg::AdmaDataScaled & ros_msg, AdmaDataV335 & adma_data)
 {
   mapAdmaHeader(ros_msg, adma_data);
   mapErrorWarningBytes(ros_msg.error_warning, adma_data);
@@ -15,16 +15,16 @@ void ADMA2ROSParserV334::mapAdmaMessageToROS(
   mapPOI(ros_msg, adma_data);
 }
 
-void ADMA2ROSParserV334::mapStatusToROS(
-  adma_ros_driver_msgs::msg::AdmaStatus & ros_msg, AdmaDataV334 & adma_data)
+void ADMA2ROSParserV335::mapStatusToROS(
+  adma_ros_driver_msgs::msg::AdmaStatus & ros_msg, AdmaDataV335 & adma_data)
 {
   mapStatusBytes(ros_msg.status_bytes, adma_data);
   mapErrorWarningBytes(ros_msg.error_warnings_bytes, adma_data);
   mapErrorWarningBitfields(ros_msg.error_warnings, adma_data);
 }
 
-void ADMA2ROSParserV334::mapAdmaHeader(
-  adma_ros_driver_msgs::msg::AdmaDataScaled & ros_msg, AdmaDataV334 & adma_data)
+void ADMA2ROSParserV335::mapAdmaHeader(
+  adma_ros_driver_msgs::msg::AdmaDataScaled & ros_msg, AdmaDataV335 & adma_data)
 {
   // fill static header information
   AdmaStaticHeader static_header = adma_data.staticHeader;
@@ -53,8 +53,8 @@ void ADMA2ROSParserV334::mapAdmaHeader(
   ros_msg.slice_data = dynamic_header.slicedata;
 }
 
-void ADMA2ROSParserV334::mapStatusBytes(
-  adma_ros_driver_msgs::msg::ByteStatus & ros_msg_byte_status, AdmaDataV334 & adma_data)
+void ADMA2ROSParserV335::mapStatusBytes(
+  adma_ros_driver_msgs::msg::ByteStatus & ros_msg_byte_status, AdmaDataV335 & adma_data)
 {
   ros_msg_byte_status.status_byte_0 = adma_data.gnssStatus;
   ros_msg_byte_status.status_byte_1 = adma_data.signalInStatus;
@@ -64,8 +64,8 @@ void ADMA2ROSParserV334::mapStatusBytes(
   ros_msg_byte_status.status_byte_5 = adma_data.statusRobot;
 }
 
-void ADMA2ROSParserV334::mapStatusBitfields(
-  adma_ros_driver_msgs::msg::Status & ros_msg_status, AdmaDataV334 & adma_data)
+void ADMA2ROSParserV335::mapStatusBitfields(
+  adma_ros_driver_msgs::msg::Status & ros_msg_status, AdmaDataV335 & adma_data)
 {
   mapStatusBit0(ros_msg_status, adma_data.gnssStatus);
   mapStatusBit1(ros_msg_status, adma_data.signalInStatus);
@@ -75,7 +75,7 @@ void ADMA2ROSParserV334::mapStatusBitfields(
   mapStatusBit5(ros_msg_status, adma_data.statusRobot);
 }
 
-void ADMA2ROSParserV334::mapStatusBit0(adma_ros_driver_msgs::msg::Status & ros_msg_status, unsigned char status_byte)
+void ADMA2ROSParserV335::mapStatusBit0(adma_ros_driver_msgs::msg::Status & ros_msg_status, unsigned char status_byte)
 {
   // status_byte_0
   unsigned char gnss_status = status_byte;
@@ -99,7 +99,7 @@ void ADMA2ROSParserV334::mapStatusBit0(adma_ros_driver_msgs::msg::Status & ros_m
   ros_msg_status.status_external_vel_out = status_external_vel;
 }
 
-void ADMA2ROSParserV334::mapStatusBit1(adma_ros_driver_msgs::msg::Status & ros_msg_status, unsigned char status_byte)
+void ADMA2ROSParserV335::mapStatusBit1(adma_ros_driver_msgs::msg::Status & ros_msg_status, unsigned char status_byte)
 {
   // status_byte_1
   unsigned char gnss_trigger_status = status_byte;
@@ -129,7 +129,7 @@ void ADMA2ROSParserV334::mapStatusBit1(adma_ros_driver_msgs::msg::Status & ros_m
   ros_msg_status.status_synclock = status_synclock;
 }
 
-void ADMA2ROSParserV334::mapStatusBit2(adma_ros_driver_msgs::msg::Status & ros_msg_status, unsigned char status_byte)
+void ADMA2ROSParserV335::mapStatusBit2(adma_ros_driver_msgs::msg::Status & ros_msg_status, unsigned char status_byte)
 {
   // status_byte_2
   unsigned char evk_status = status_byte;
@@ -158,7 +158,7 @@ void ADMA2ROSParserV334::mapStatusBit2(adma_ros_driver_msgs::msg::Status & ros_m
   ros_msg_status.status_pos = status_pos.to_ulong();
 }
 
-void ADMA2ROSParserV334::mapStatusBit4(adma_ros_driver_msgs::msg::Status & ros_msg_status, unsigned char status_byte)
+void ADMA2ROSParserV335::mapStatusBit4(adma_ros_driver_msgs::msg::Status & ros_msg_status, unsigned char status_byte)
 {
   // status_byte_4
   unsigned char kf_status = status_byte;
@@ -178,7 +178,7 @@ void ADMA2ROSParserV334::mapStatusBit4(adma_ros_driver_msgs::msg::Status & ros_m
   ros_msg_status.status_speed = status_speed.to_ulong();
 }
 
-void ADMA2ROSParserV334::mapStatusBit5(adma_ros_driver_msgs::msg::Status & ros_msg_status, unsigned char status_byte)
+void ADMA2ROSParserV335::mapStatusBit5(adma_ros_driver_msgs::msg::Status & ros_msg_status, unsigned char status_byte)
 {
   // status_byte_5
   std::bitset<8> bit_status_robot = status_byte;
@@ -189,9 +189,9 @@ void ADMA2ROSParserV334::mapStatusBit5(adma_ros_driver_msgs::msg::Status & ros_m
   ros_msg_status.status_robot = status_robot.to_ulong();
 }
 
-void ADMA2ROSParserV334::mapErrorWarningBytes(
+void ADMA2ROSParserV335::mapErrorWarningBytes(
   adma_ros_driver_msgs::msg::ByteErrorWarning & ros_msg_byte_error_warning,
-  AdmaDataV334 & adma_data)
+  AdmaDataV335 & adma_data)
 {
   ros_msg_byte_error_warning.error_1 = adma_data.dataError1;
   ros_msg_byte_error_warning.error_2 = adma_data.dataError2;
@@ -199,8 +199,8 @@ void ADMA2ROSParserV334::mapErrorWarningBytes(
   ros_msg_byte_error_warning.error_3 = adma_data.dataError3;
 }
 
-void ADMA2ROSParserV334::mapErrorWarningBitfields(
-  adma_ros_driver_msgs::msg::ErrorWarning & ros_msg_error_warning, AdmaDataV334 & adma_data)
+void ADMA2ROSParserV335::mapErrorWarningBitfields(
+  adma_ros_driver_msgs::msg::ErrorWarning & ros_msg_error_warning, AdmaDataV335 & adma_data)
 {
   mapErrorBit0(ros_msg_error_warning, adma_data.dataError1);
   mapErrorBit1(ros_msg_error_warning, adma_data.dataError2);
@@ -208,7 +208,7 @@ void ADMA2ROSParserV334::mapErrorWarningBitfields(
   mapErrorBit2(ros_msg_error_warning, adma_data.dataError3);
 }
 
-void ADMA2ROSParserV334::mapErrorBit0(adma_ros_driver_msgs::msg::ErrorWarning & ros_msg_error_warning, unsigned char error_byte)
+void ADMA2ROSParserV335::mapErrorBit0(adma_ros_driver_msgs::msg::ErrorWarning & ros_msg_error_warning, unsigned char error_byte)
 {
   ros_msg_error_warning.error_gyro_hw = getbit(error_byte, 0);
   ros_msg_error_warning.error_accel_hw = getbit(error_byte, 1);
@@ -220,7 +220,7 @@ void ADMA2ROSParserV334::mapErrorBit0(adma_ros_driver_msgs::msg::ErrorWarning & 
   ros_msg_error_warning.error_cmd = getbit(error_byte, 7);
 }
 
-void ADMA2ROSParserV334::mapErrorBit1(adma_ros_driver_msgs::msg::ErrorWarning & ros_msg_error_warning, unsigned char error_byte)
+void ADMA2ROSParserV335::mapErrorBit1(adma_ros_driver_msgs::msg::ErrorWarning & ros_msg_error_warning, unsigned char error_byte)
 {
   ros_msg_error_warning.error_data_bus = getbit(error_byte, 0);
   ros_msg_error_warning.error_can_bus = getbit(error_byte, 1);
@@ -230,7 +230,7 @@ void ADMA2ROSParserV334::mapErrorBit1(adma_ros_driver_msgs::msg::ErrorWarning & 
   ros_msg_error_warning.error_range_max = getbit(error_byte, 6);
 }
 
-void ADMA2ROSParserV334::mapWarningBit0(adma_ros_driver_msgs::msg::ErrorWarning & ros_msg_error_warning, unsigned char warning_byte)
+void ADMA2ROSParserV335::mapWarningBit0(adma_ros_driver_msgs::msg::ErrorWarning & ros_msg_error_warning, unsigned char warning_byte)
 {
   ros_msg_error_warning.warn_gnss_no_solution = getbit(warning_byte, 0);
   ros_msg_error_warning.warn_gnss_vel_ignored = getbit(warning_byte, 1);
@@ -240,13 +240,13 @@ void ADMA2ROSParserV334::mapWarningBit0(adma_ros_driver_msgs::msg::ErrorWarning 
   ros_msg_error_warning.warn_gnss_dualant_ignored = getbit(warning_byte, 5);
 }
 
-void ADMA2ROSParserV334::mapErrorBit2(adma_ros_driver_msgs::msg::ErrorWarning & ros_msg_error_warning, unsigned char error_byte)
+void ADMA2ROSParserV335::mapErrorBit2(adma_ros_driver_msgs::msg::ErrorWarning & ros_msg_error_warning, unsigned char error_byte)
 {
   ros_msg_error_warning.error_hw_sticky = getbit(error_byte, 0);
 }
 
-void ADMA2ROSParserV334::mapUnscaledData(
-  adma_ros_driver_msgs::msg::AdmaDataScaled & ros_msg, AdmaDataV334 & adma_data)
+void ADMA2ROSParserV335::mapUnscaledData(
+  adma_ros_driver_msgs::msg::AdmaDataScaled & ros_msg, AdmaDataV335 & adma_data)
 {
   //fill external velocity
   ros_msg.ext_vel_dig_pulses_x = adma_data.extveldigpulsesx;
@@ -272,7 +272,10 @@ void ADMA2ROSParserV334::mapUnscaledData(
   ros_msg.gnss_sats_visible = adma_data.gnsssatsvisible;
   ros_msg.gnss_sats_dualant_used = adma_data.gnsssatsdualantused;
   ros_msg.gnss_sats_dualant_visible = adma_data.gnsssatsdualantvisible;
+  ros_msg.gnss_sats_single_freq = adma_data.gnsssatssinglefreq;
+  ros_msg.gnss_sats_multi_freq = adma_data.gnsssatsmultifreq;
   ros_msg.gnss_log_delay = adma_data.gnsslogdelay;
+  ros_msg.gnss_sats_dualant_multi_freq = adma_data.gnsssatsdualantmultifreq;
   std::stringstream ss;
   ss << adma_data.gnssbasenr;
   ros_msg.gnss_base_nr = ss.str();
@@ -292,8 +295,8 @@ void ADMA2ROSParserV334::mapUnscaledData(
   ros_msg.gnss_receiver_status = adma_data.gnssreceiverstatus;
 }
 
-void ADMA2ROSParserV334::mapScaledData(
-  adma_ros_driver_msgs::msg::AdmaDataScaled & ros_msg, AdmaDataV334 & adma_data)
+void ADMA2ROSParserV335::mapScaledData(
+  adma_ros_driver_msgs::msg::AdmaDataScaled & ros_msg, AdmaDataV335 & adma_data)
 {
   ros_msg.acc_body_hr.x = getScaledValue(adma_data.sensorsBodyX.accHR, 0.0001);
   ros_msg.acc_body_hr.y = getScaledValue(adma_data.sensorsBodyY.accHR, 0.0001);
@@ -336,6 +339,7 @@ void ADMA2ROSParserV334::mapScaledData(
   ros_msg.gnss_stddev_lat = getScaledValue(adma_data.gnssstddevlat, 0.001);
   ros_msg.gnss_stddev_long = getScaledValue(adma_data.gnssstddevlon, 0.001);
   ros_msg.gnss_stddev_height = getScaledValue(adma_data.gnssstddevheight, 0.001);
+  ros_msg.gnss_stddev_cog = getScaledValue(adma_data.gnssstddevcog, 0.01);
 
   ros_msg.gnss_vel_frame.x = getScaledValue(adma_data.gnssvelframex, 0.005);
   ros_msg.gnss_vel_frame.y = getScaledValue(adma_data.gnssvelframey, 0.005);
@@ -358,6 +362,7 @@ void ADMA2ROSParserV334::mapScaledData(
   ros_msg.undulation = getScaledValue(adma_data.undulation, 0.01);
 
   ros_msg.ins_height = getScaledValue(adma_data.insHeight, 0.01);
+  ros_msg.ins_yaw_rel = getScaledValue(adma_data.insyawrel, 0.01);
 
   ros_msg.ins_lat_abs = getScaledValue(adma_data.insPos.pos_abs.latitude, 0.0000001);
   ros_msg.ins_long_abs = getScaledValue(adma_data.insPos.pos_abs.longitude, 0.0000001);
@@ -396,8 +401,8 @@ void ADMA2ROSParserV334::mapScaledData(
   ros_msg.gnss_dualant_stddev_pitch_hr = getScaledValue(adma_data.gnssdualantstddevpitchhr, 0.01);
 }
 
-void ADMA2ROSParserV334::mapPOI(
-  adma_ros_driver_msgs::msg::AdmaDataScaled & ros_msg, AdmaDataV334 & adma_data)
+void ADMA2ROSParserV335::mapPOI(
+  adma_ros_driver_msgs::msg::AdmaDataScaled & ros_msg, AdmaDataV335 & adma_data)
 {
   // first create a array for all available POI
   std::array<adma_ros_driver_msgs::msg::POI, 8> pois;
